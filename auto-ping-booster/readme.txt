@@ -1,39 +1,66 @@
-=== Auto Ping Booster ===
+=== Auto Ping Booster Pro ===
 Contributors: same2cool
-Tags: SEO, Ping, Google, Blogsearch, Booster, Auto Ping, boost, boost seo,
-Requires at least: 3.3
-Tested up to: 4.6.1
-Stable tag: SEO, Ping, Pinger, Google ranking, booster seo, advance pinger, ping google,  auto ping, auto ping booster
+Tags: seo, indexing, indexnow, bing, google, wordpress, auto indexing, seo booster
+Requires at least: 5.0
+Tested up to: 6.5
+Stable tag: 2.0
 License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+
+==Banner==
+https://plugins.svn.wordpress.org/auto-ping-booster/assets/banner-772x250.png
+==logo==
+https://plugins.svn.wordpress.org/auto-ping-booster/assets/icon-512x512.png
+==icon==
+https://plugins.svn.wordpress.org/auto-ping-booster/assets/icon-256x256.png
 
 
-Auto Ping Booster will auto ping your blog in Google, Baidu, Yandex and many search engines after each update.
+Auto Ping Booster Pro is a modern SEO indexing automation plugin that helps your WordPress website instantly notify search engines when new content is published.
+
+Unlike old ping-based systems, this plugin focuses on modern indexing technologies like IndexNow and fast search engine submission methods.
 
 == Description ==
-<ol>
-<li>Use this plugin to ping your blog, post, pages, images, docs files, on daily basis.</li>
-<li>Auto Ping Booster will auto Ping your blog in Google Blogsearch after every update.</li>
-<li>Auto Ping Booster is known about SEO Booster. </li>
-<li>Just upload auto-ping-booster.zip file to plugin directory or upload it by plugin option in menu and active it. It works automatically itself.
-</li>
-<li>Once you update your post or blog, your update will be automatically pinged to top pinger sites.</li>
-<li>Your post will be on google indexing within 10 to 15 minutes.</li>
-<li>Google, Yandex, PingoMatic, NewsGator and top services. </li>
-<li>For More Information Contact <a href="http://www.samee.us">Digital Marketing Specialist</a></li>
-<li>If your target country is China, Install <a href="https://wordpress.org/plugins/baidu-ping-booster/">Baidu Ping Booster</a> </li>
-</ol>
 
+Auto Ping Booster Pro helps website owners improve indexing speed and visibility in search engines.
+
+Features:
+
+1. Automatically sends newly published posts to indexing services.
+2. Uses modern IndexNow protocol for faster search engine discovery.
+3. Lightweight and works in background without slowing your site.
+4. Supports future integration with Bing and Google indexing APIs.
+5. Simple and automatic — no manual submission required.
+6. Designed for bloggers, SEO experts, and eCommerce websites.
+7. Helps improve indexing speed for new content.
+
+This plugin is a modern replacement for outdated ping services that are no longer effective in today’s SEO environment.
 
 == Installation ==
 
-1. Upload `auto-ping-booster.zip` to the `/wp-content/plugins/` directory
-2. Activate the plugin through the 'Plugins' menu in WordPress
+1. Upload the plugin folder to `/wp-content/plugins/`
+2. Activate the plugin through the WordPress 'Plugins' menu
+3. Go to “Auto Ping Booster Pro” in admin panel (if available)
+4. Plugin will start working automatically on post publish
 
-== Frequently asked questions ==
+== Frequently Asked Questions ==
 
-= A question that someone might have =
+= Does this plugin still use old ping services? =
+No. This plugin is designed for modern indexing systems like IndexNow.
 
-An answer to that question.
-How does this plugin work?
-This plugin ping your blog to Google blog search on each update.
+= Will it improve SEO rankings directly? =
+It improves indexing speed, which can indirectly help SEO performance.
+
+= Does it slow down my website? =
+No. It runs lightweight background requests using WordPress HTTP API.
+
+= Can I use it with WooCommerce? =
+Yes, it works with all WordPress post types including products.
+
+== Changelog ==
+
+= 2.0 =
+- Complete plugin rewrite
+- Removed outdated ping engine
+- Added modern indexing structure (IndexNow ready)
+- Improved performance and security structure
+- Added admin dashboard foundation
