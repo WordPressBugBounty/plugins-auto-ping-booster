@@ -1,66 +1,60 @@
-=== Auto Ping Booster Pro ===
+=== Auto Ping Booster ===
 Contributors: same2cool
-Tags: seo, indexing, indexnow, bing, google, wordpress, auto indexing, seo booster
+Tags: seo, indexing, indexnow, ping, booster, google indexing
 Requires at least: 5.0
-Tested up to: 6.5
-Stable tag: 2.0
+Tested up to: 6.9
+Stable tag: 2.10
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-==Banner==
-https://plugins.svn.wordpress.org/auto-ping-booster/assets/banner-772x250.png
-==logo==
-https://plugins.svn.wordpress.org/auto-ping-booster/assets/icon-512x512.png
-==icon==
-https://plugins.svn.wordpress.org/auto-ping-booster/assets/icon-256x256.png
-
-
-Auto Ping Booster Pro is a modern SEO indexing automation plugin that helps your WordPress website instantly notify search engines when new content is published.
-
-Unlike old ping-based systems, this plugin focuses on modern indexing technologies like IndexNow and fast search engine submission methods.
+Instantly notify search engines and indexing networks using modern protocols like IndexNow when content is published or updated.
 
 == Description ==
 
-Auto Ping Booster Pro helps website owners improve indexing speed and visibility in search engines.
+Stop relying on legacy, outdated XML-RPC ping networks that search engines ignore. **Auto Ping Booster** modernizes your site's SEO discovery pipeline by dropping dead technologies and utilizing lightning-fast indexing mechanisms.
 
-Features:
+When you transition a post, page, or custom post type to live status, Auto Ping Booster securely formats an automated ping payload, bypassing draft update spamming to ensure search spiders index your fresh content cleanly.
 
-1. Automatically sends newly published posts to indexing services.
-2. Uses modern IndexNow protocol for faster search engine discovery.
-3. Lightweight and works in background without slowing your site.
-4. Supports future integration with Bing and Google indexing APIs.
-5. Simple and automatic — no manual submission required.
-6. Designed for bloggers, SEO experts, and eCommerce websites.
-7. Helps improve indexing speed for new content.
+### ⚡ Free Core Features:
+* **IndexNow Engine Integration:** Instantly ping Bing, Yandex, Seznam, and other supporting crawlers simultaneously with zero performance footprint.
+* **Smart State Transitions:** Optimized framework fires requests *only* when status truly changes to publish—protecting your API quotas from draft/typo save spamming.
+* **Dynamic Key Verification:** Automated endpoint hosting handles internal `.txt` authorization keys seamlessly without forcing you to modify server root structures manually.
+* **Integrated Activity Logs:** Optional background logging system tracks HTTP return payloads to let you troubleshoot response states directly.
 
-This plugin is a modern replacement for outdated ping services that are no longer effective in today’s SEO environment.
+### 🚀 Upcoming Premium Upgrades:
+We are currently building advanced enterprise features to take your automated search traffic further:
+1. **Google Indexing API Engine (Pro):** Bypasses traditional discovery loops by passing URLs directly to Google's real-time API cluster using secure service accounts.
+2. **Autonomous AI Schema & Semantic Meta Tier (AI Tier):** Deep contextual post analysis automatically generates JSON-LD data structures and optimized snippet content before triggering server indexes.
 
 == Installation ==
 
-1. Upload the plugin folder to `/wp-content/plugins/`
-2. Activate the plugin through the WordPress 'Plugins' menu
-3. Go to “Auto Ping Booster Pro” in admin panel (if available)
-4. Plugin will start working automatically on post publish
+1. Upload the entire `auto-ping-booster` directory to your `/wp-content/plugins/` pipeline.
+2. Activate the application inside the native WordPress **Plugins** control panel.
+3. Access the tailored interface via the **APB Pro** dash module down your sidebar navigation to enter your IndexNow key and set parameters.
 
 == Frequently Asked Questions ==
 
-= Does this plugin still use old ping services? =
-No. This plugin is designed for modern indexing systems like IndexNow.
+= Does this plugin still utilize legacy XML-RPC pings? =
+No. Legacy protocols have been entirely removed. This tool builds natively on top of direct API endpoints and verified JSON handshakes.
 
-= Will it improve SEO rankings directly? =
-It improves indexing speed, which can indirectly help SEO performance.
+= Will this instantly improve my organic keyword positioning? =
+It accelerates crawl discovery and priority index scheduling. While indexing is a mandatory requirement for organic visibility, your actual keyword ranking relies on content quality and core optimization principles.
 
-= Does it slow down my website? =
-No. It runs lightweight background requests using WordPress HTTP API.
+= Does running background handshakes impact frontend loading metrics? =
+Not at all. The underlying logic executes exclusively during admin content status changes and processes as isolated server requests, keeping public frontend site delivery completely unaffected.
 
-= Can I use it with WooCommerce? =
-Yes, it works with all WordPress post types including products.
+= Does it support WooCommerce products or custom post structures? =
+Yes. By decoupling the core mechanism and shifting to status changes, the underlying handler is ready to process any content classification schema.
 
 == Changelog ==
 
-= 2.0 =
-- Complete plugin rewrite
-- Removed outdated ping engine
-- Added modern indexing structure (IndexNow ready)
-- Improved performance and security structure
-- Added admin dashboard foundation
+= 2.10 =
+* Performance: Refactored operational hooks to `transition_post_status` to stop api multi-call flooding on typo patches.
+* Feature: Introduced automated internal key rewrite handlers to serve dynamic verification documents automatically.
+* UI: Rebuilt settings panel architecture to lay foundations for upcoming premium extensions.
+* Version Check: Full compatibility certification up to WordPress 6.9.
+
+= 2.01 =
+* Complete plugin rewrite.
+* Removed outdated legacy ping loops.
+* Implemented modern IndexNow base layer.
