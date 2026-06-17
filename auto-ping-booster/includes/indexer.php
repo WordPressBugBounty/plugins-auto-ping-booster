@@ -1,15 +1,15 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-function apb_send_to_indexers($url, $post_id = 0) {
+function apb_send_to_indexers($url, $post_id = 0, $post_type = 'post') {
     $key = get_option('apb_indexnow_key');
     
     if (empty($key)) {
-        apb_log_action("Indexing failed: IndexNow API Key is missing.");
+        apb_log_action($post_id, $post_type, $url, 'Failed', 'IndexNow API Key configuration missing.');
         return;
     }
 
-    // --- 1. INDEXNOW ENGINE ---
+    // --- INDEXNOW PROTOCOL IMPLEMENTATION ---
     $endpoint = "https://api.indexnow.org/indexnow";
     $data = array(
         "host"        => parse_url(home_url(), PHP_URL_HOST),
@@ -19,30 +19,26 @@ function apb_send_to_indexers($url, $post_id = 0) {
     );
 
     $response = wp_remote_post($endpoint, array(
-        'body'    => json_encode($data),
-        'headers' => array('Content-Type' => 'application/json; charset=utf-8'),
-        'timeout' => 15
+        'body'        => json_encode($data),
+        'headers'     => array('Content-Type' => 'application/json; charset=utf-8'),
+        'timeout'     => 15,
+        'data_format' => 'body'
     ));
 
-    // Log the event output
     if (is_wp_error($response)) {
-        apb_log_action("IndexNow Error for ID {$post_id}: " . $response->get_error_message());
+        apb_log_action($post_id, $post_type, $url, 'Error', $response->get_error_message());
     } else {
         $code = wp_remote_retrieve_response_code($response);
-        apb_log_action("IndexNow Success for ID {$post_id}: HTTP Status Code {$code}");
+        if ($code === 200) {
+            apb_log_action($post_id, $post_type, $url, 'Success', 'HTTP Status Code 200: Key paired successfully.');
+        } else {
+            apb_log_action($post_id, $post_type, $url, 'Warning', 'HTTP Error Response Code: ' . $code);
+        }
     }
 
-    // --- 2. FUTURE GOOGLE INDEXING API (PRO TIER) ---
-    // If (get_option('apb_pro_google_json_key')) { ... }
+    // --- FUTURE GOOGLE INDEXING API (PRO TIER) ---
+    // if (get_option('apb_pro_google_json_key')) { ... }
 
-    // --- 3. FUTURE AI SEO SCHEMA GENERATION (AI TIER) ---
-    // If (get_option('apb_ai_tier_enabled')) { ... }
-}
-
-function apb_log_action($message) {
-    if (get_option('apb_enable_logging') !== '1') return;
-
-    $log_file = plugin_dir_path(__DIR__) . 'debug.log';
-    $timestamp = date("Y-m-d H:i:s");
-    error_log("[{$timestamp}] {$message}\n", 3, $log_file);
+    // --- FUTURE AI SEO SCHEMA GENERATION (AI TIER) ---
+    // if (get_option('apb_ai_tier_enabled')) { ... }
 }
