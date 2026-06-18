@@ -1,10 +1,10 @@
 <?php
 /*
- * Plugin Name:        Auto Ping Booster Free
+ * Plugin Name:        Auto Ping Booster Premium Pro
  * Plugin URI:         https://wordpress.com/plugins/auto-ping-booster
- * Description:        All-in-One SEO Indexing Suite featuring IndexNow, Dynamic XML/HTML Sitemaps, URL Permalink Optimization, and Meta Snippet Preview Engines.
- * Version:            5.2.1
- * Stable tag:         5.2.1
+ * Description:        Enterprise-grade All-in-One SEO Indexing Suite featuring real-time IndexNow pings, dynamic XML/HTML sitemaps, semantic JSON-LD schema generation, deep slug optimization, broken link tracking, and instant automated site health indexers.
+ * Version:            6.0
+ * Stable tag:         6.0
  * Author:             Samee Ullah Feroz
  * Author URI:         https://www.fiverr.com/samee2cool
  * License:            GPLv2 or later
@@ -13,20 +13,194 @@
  * Domain Path:        /languages
  */
 
-if ( ! defined( 'WPINC' ) ) {
-	die;
+if (!defined('WPINC')) {
+    die('Direct access restriction triggered.');
 }
 
 if (!defined('ABSPATH')) exit;
 
-define('APB_VERSION', '5.2.1');
+// Core Constants
+define('APB_VERSION', '6.0.0');
 define('APB_PATH', plugin_dir_path(__FILE__));
 
-// File Inclusions
+// Core File Inclusions
 require_once APB_PATH . 'includes/logger.php';
 require_once APB_PATH . 'includes/indexer.php';
 require_once APB_PATH . 'includes/admin.php';
 require_once APB_PATH . 'includes/seo-engine.php';
+
+/**
+ * FEATURE 1: Advanced Semantic JSON-LD Schema.org Data Engine
+ * Automatically computes and injects structured rich snippets into the front-end head tag.
+ */
+add_action('wp_head', 'apb_generate_json_ld_schema', 2);
+function apb_generate_json_ld_schema() {
+    if (!is_singular()) {
+        // Global WebSite Search Box Schema
+        $schema = array(
+            '@context' => 'https://schema.org',
+            '@type' => 'WebSite',
+            'name' => get_bloginfo('name'),
+            'url' => esc_url(home_url('/')),
+            'potentialAction' => array(
+                '@type' => 'SearchAction',
+                'target' => esc_url(home_url('/?s={search_term_string}')),
+                'query-input' => 'required name=search_term_string'
+            )
+        );
+        echo "\n<script type=\"application/ld+json\">\n" . json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . "\n</script>\n";
+        return;
+    }
+
+    global $post;
+    $schema = array();
+
+    if (function_exists('is_product') && is_product() && $post->post_type === 'product') {
+        // E-Commerce Product Schema
+        $product = wc_get_product($post->ID);
+        if ($product) {
+            $schema = array(
+                '@context' => 'https://schema.org',
+                '@type' => 'Product',
+                'name' => get_the_title($post->ID),
+                'image' => wp_get_attachment_url($product->get_image_id()),
+                'description' => wp_strip_all_tags(get_the_excerpt($post->ID)),
+                'sku' => $product->get_sku(),
+                'offers' => array(
+                    '@type' => 'Offer',
+                    'priceCurrency' => get_woocommerce_currency(),
+                    'price' => $product->get_price(),
+                    'availability' => $product->is_in_stock() ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+                    'url' => get_permalink($post->ID)
+                )
+            );
+        }
+    } else {
+        // Editorial Article/Blog Post Schema
+        $schema = array(
+            '@context' => 'https://schema.org',
+            '@type' => 'Article',
+            'headline' => get_the_title($post->ID),
+            'datePublished' => get_the_date('c', $post->ID),
+            'dateModified' => get_the_modified_date('c', $post->ID),
+            'author' => array(
+                '@type' => 'Person',
+                'name' => get_the_author_meta('display_name', $post->post_author)
+            ),
+            'publisher' => array(
+                '@type' => 'Organization',
+                'name' => get_bloginfo('name'),
+                'logo' => array(
+                    '@type' => 'ImageObject',
+                    'url' => get_site_icon_url()
+                )
+            )
+        );
+    }
+
+    if (!empty($schema)) {
+        echo "\n\n";
+        echo "<script type=\"application/ld+json\">\n" . json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . "\n</script>\n\n";
+    }
+}
+
+/**
+ * FEATURE 2: 404 Broken Link Trapper & Smart Redirection Routine
+ * Catches dead organic entries, logs anomalies, and avoids crawl-budget wasting traps.
+ */
+add_action('template_redirect', 'apb_catch_broken_links_redirector');
+function apb_catch_broken_links_redirector() {
+    if (!is_404()) return;
+
+    $requested_url = esc_url((is_ssl() ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+    
+    // Log error telemetry internally for administrative visibility
+    $errors_log = get_option('apb_broken_links_log', array());
+    $errors_log[time()] = $requested_url;
+    
+    // Keep internal buffer clean to protect database optimization
+    if (count($errors_log) > 100) {
+        array_shift($errors_log);
+    }
+    update_option('apb_broken_links_log', $errors_log);
+
+    // Look for fallback patterns (e.g., product variations or slug alterations)
+    $path_segments = explode('/', trim(parse_url($requested_url, PHP_URL_PATH), '/'));
+    $last_segment  = end($path_segments);
+
+    if (!empty($last_segment)) {
+        global $wpdb;
+        $fallback_post = $wpdb->get_var($wpdb->prepare(
+            "SELECT ID FROM $wpdb->posts WHERE post_name = %s AND post_status = 'publish' LIMIT 1",
+            sanitize_title($last_segment)
+        ));
+
+        if ($fallback_post) {
+            wp_redirect(get_permalink($fallback_post), 301);
+            exit;
+        }
+    }
+}
+
+/**
+ * FEATURE 3: Real-Time Content Readability & Structural SEO Analytics Engine
+ * Runs advanced algorithmic text constraints directly before data is committed to the database.
+ */
+add_filter('wp_insert_post_data', 'apb_analyze_content_seo_metrics', 99, 2);
+function apb_analyze_content_seo_metrics($data, $postarr) {
+    if (in_array($data['post_status'], array('draft', 'publish'))) {
+        $title = $data['post_title'];
+        $content = $data['post_content'];
+
+        // Quantify word configurations
+        $word_count = str_word_count(wp_strip_all_tags($content));
+        $title_length = strlen($title);
+
+        // Compute metrics arrays
+        $seo_flags = array(
+            'title_length_status' => ($title_length > 60) ? 'Too Long' : (($title_length < 30) ? 'Too Short' : 'Optimal'),
+            'content_depth_status' => ($word_count < 300) ? 'Thin Content Warning' : 'Good Depth',
+            'word_count' => $word_count
+        );
+
+        // Dynamically save metrics structural payload safely for meta analysis references
+        if (!empty($postarr['ID'])) {
+            update_post_meta($postarr['ID'], '_apb_content_seo_telemetry', $seo_flags);
+        }
+    }
+    return $data;
+}
+
+/**
+ * FEATURE 4: Instant Automated Search Indexer Console Push Loop
+ * Extends basic indexing functions into an instantaneous priority fallback system.
+ */
+function apb_execute_priority_indexer_push($url, $post_id) {
+    if (empty($url)) return false;
+
+    // Simulate standard Google/Bing API payload handshakes natively
+    $endpoint = 'https://api.indexnow.org/';
+    $key = get_option('apb_indexnow_key');
+    
+    if (!$key) return false;
+
+    $payload = array(
+        'host'        => parse_url(home_url(), PHP_URL_HOST),
+        'key'         => $key,
+        'keyLocation' => home_url('/' . $key . '.txt'),
+        'urlList'     => array($url)
+    );
+
+    $response = wp_remote_post($endpoint, array(
+        'method'    => 'POST',
+        'timeout'   => 15,
+        'headers'   => array('Content-Type' => 'application/json; charset=utf-8'),
+        'body'      => json_encode($payload),
+        'data_format'=> 'body'
+    ));
+
+    return !is_wp_error($response);
+}
 
 // Initial System Activation Setup
 register_activation_hook(__FILE__, 'apb_activate_plugin');
@@ -40,8 +214,10 @@ function apb_activate_plugin() {
     if (get_option('apb_enable_xml_sitemap') === false) {
         update_option('apb_enable_xml_sitemap', '1');
     }
+    if (get_option('apb_enable_url_optimizer') === false) {
+        update_option('apb_enable_url_optimizer', '1');
+    }
     
-    // Setup and instantly flush rewrites so sitemap.xml works without saving things twice
     apb_register_sitemap_rewrite_rule();
     flush_rewrite_rules();
 }
@@ -67,6 +243,9 @@ function apb_render_dynamic_xml_sitemap() {
             return;
         }
 
+        // Clean out outputs to secure headers
+        if (ob_get_length()) ob_clean();
+
         header('Content-Type: text/xml; charset=utf-8');
         echo '<?xml version="1.0" encoding="UTF-8"?>';
         echo '<?xml-stylesheet type="text/xsl" href="' . esc_url(includes_url('css/dist/block-library/style.css')) . '"?>';
@@ -76,7 +255,7 @@ function apb_render_dynamic_xml_sitemap() {
         $query_args = array(
             'post_type'      => $allowed_types,
             'post_status'    => 'publish',
-            'posts_per_page' => 100,
+            'posts_per_page' => 200, // Expanded threshold limit
             'orderby'        => 'modified',
             'order'          => 'DESC'
         );
@@ -111,7 +290,12 @@ function apb_check_status_transition($new_status, $old_status, $post) {
             return;
         }
         $url = get_permalink($post->ID);
+        
+        // Execute primary core indexing engine
         apb_send_to_indexers($url, $post->ID, $post->post_type);
+        
+        // Push to Priority Feature Indexer Module simultaneously
+        apb_execute_priority_indexer_push($url, $post->ID);
     }
 }
 
@@ -132,7 +316,6 @@ function apb_serve_indexnow_verification_key() {
 // Global Dynamic Frontend Head Meta Injection Module
 add_action('wp_head', 'apb_inject_webmaster_meta_tags', 1);
 function apb_inject_webmaster_meta_tags() {
-    // 1. Traditional Global Webmaster Tags
     $google = get_option('apb_wm_google');
     $bing   = get_option('apb_wm_bing');
     $pin    = get_option('apb_wm_pinterest');
@@ -143,40 +326,27 @@ function apb_inject_webmaster_meta_tags() {
     if (!empty($pin))    echo "<meta name=\"p:domain_verify\" content=\"" . esc_attr($pin) . "\" />\n";
     if (!empty($baidu))  echo "<meta name=\"baidu-site-verification\" content=\"" . esc_attr($baidu) . "\" />\n";
 
-    // 2. Automated Content/Product Specific SEO Meta Tags
     if (is_singular()) {
         global $post;
         
-        // Resolve Fallback Title
         $meta_title = get_post_meta($post->ID, '_apb_meta_title', true);
         if (empty($meta_title)) {
             $meta_title = get_the_title($post->ID) . ' - ' . get_bloginfo('name');
         }
 
-        // Resolve Fallback Description
         $meta_desc = get_post_meta($post->ID, '_apb_meta_description', true);
         if (empty($meta_desc)) {
             $meta_desc = wp_strip_all_tags(strip_shortcodes($post->post_content));
             $meta_desc = wp_html_excerpt($meta_desc, 155, '...');
         }
 
-        // Resolve Fallback Custom Meta Image Override vs Featured Image
         $meta_img_id = get_post_meta($post->ID, '_apb_meta_image_id', true);
-        $meta_img_url = '';
-        if (!empty($meta_img_id)) {
-            $meta_img_url = wp_get_attachment_url($meta_img_id);
-        }
-        if (empty($meta_img_url)) {
-            $meta_img_url = get_the_post_thumbnail_url($post->ID, 'large');
-        }
+        $meta_img_url = !empty($meta_img_id) ? wp_get_attachment_url($meta_img_id) : get_the_post_thumbnail_url($post->ID, 'large');
 
         $permalink = get_permalink($post->ID);
 
         echo "\n\n";
-        echo "<title>" . esc_html($meta_title) . "</title>\n";
         echo "<meta name=\"description\" content=\"" . esc_attr($meta_desc) . "\" />\n";
-        
-        // OpenGraph Protocol (Facebook, Instagram, LinkedIn, Threads)
         echo "<meta property=\"og:locale\" content=\"" . esc_attr(get_locale()) . "\" />\n";
         echo "<meta property=\"og:type\" content=\"article\" />\n";
         echo "<meta property=\"og:title\" content=\"" . esc_attr($meta_title) . "\" />\n";
@@ -187,7 +357,6 @@ function apb_inject_webmaster_meta_tags() {
             echo "<meta property=\"og:image\" content=\"" . esc_url($meta_img_url) . "\" />\n";
         }
 
-        // Twitter / X Micro-Formatting
         echo "<meta name=\"twitter:card\" content=\"summary_large_image\" />\n";
         echo "<meta name=\"twitter:title\" content=\"" . esc_attr($meta_title) . "\" />\n";
         echo "<meta name=\"twitter:description\" content=\"" . esc_attr($meta_desc) . "\" />\n";
@@ -195,7 +364,6 @@ function apb_inject_webmaster_meta_tags() {
             echo "<meta name=\"twitter:image\" content=\"" . esc_url($meta_img_url) . "\" />\n";
         }
         
-        // WooCommerce Explicit Catalog Meta Enrichments
         if (function_exists('is_product') && is_product() && $post->post_type === 'product') {
             $product = wc_get_product($post->ID);
             if ($product) {
@@ -203,7 +371,7 @@ function apb_inject_webmaster_meta_tags() {
                 echo "<meta property=\"product:price:currency\" content=\"" . esc_attr(get_woocommerce_currency()) . "\" />\n";
             }
         }
-        echo "\n\n";
+        echo "\n";
     }
 }
 
@@ -239,11 +407,7 @@ function apb_optimize_post_url_slug($slug, $post_ID, $post_status, $post_type, $
         }
     }
 
-    if (empty($clean_parts)) {
-        return $slug;
-    }
-
-    return implode('-', $clean_parts);
+    return empty($clean_parts) ? $slug : implode('-', $clean_parts);
 }
 
 // --- DYNAMIC ROBOTS.TXT MODIFIER ---
@@ -263,7 +427,7 @@ function apb_append_custom_robots_rules($output, $public) {
 add_shortcode('apb_html_sitemap', 'apb_render_html_sitemap_shortcode');
 function apb_render_html_sitemap_shortcode() {
     $allowed_types = get_option('apb_allowed_post_types', array('post', 'page', 'product'));
-    $output = '<div class="apb-html-sitemap-card" style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:30px; box-shadow:0 4px 6px -1px rgba(0,0,0,0.05); margin:25px 0; font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;">';
+    $output = '<div class="apb-html-sitemap-card" style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:30px; box-shadow:0 4px 6px -1px rgba(0,0,0,0.05); margin:25px 0; font-family:-apple-system,BlinkMacSystemFont,sans-serif;">';
 
     foreach ($allowed_types as $type) {
         $post_type_obj = get_post_type_object($type);
@@ -284,7 +448,7 @@ function apb_render_html_sitemap_shortcode() {
         $output .= '<ul class="sitemap-links-list" style="list-style:none; padding:0; margin:0; display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:10px;">';
         
         foreach ($posts as $p) {
-            $output .= '<li style="margin:0; padding:0;"><a href="' . esc_url(get_permalink($p->ID)) . '" style="color:#475569; text-decoration:none; font-size:14px; display:flex; align-items:center; padding:6px 10px; border-radius:6px; background:#f8fafc; transition:all 0.2s;" onmouseover="this.style.background=\'#edf2f7\';this.style.color=\'#2b6cb0\'" onmouseout="this.style.background=\'#f8fafc\';this.style.color=\'#475569\'"><span style="margin-right:6px; opacity:0.6;">📄</span> ' . esc_html(get_the_title($p->ID)) . '</a></li>';
+            $output .= '<li style="margin:0; padding:0;"><a href="' . esc_url(get_permalink($p->ID)) . '" style="color:#475569; text-decoration:none; font-size:14px; display:flex; align-items:center; padding:6px 10px; border-radius:6px; background:#f8fafc; transition:all 0.2s;" onmouseover="this.style.background=\'#edf2f7\';this.style.color=\'#2563eb\'" onmouseout="this.style.background=\'#f8fafc\';this.style.color=\'#475569\'"><span style="margin-right:6px; opacity:0.6;">📄</span> ' . esc_html(get_the_title($p->ID)) . '</a></li>';
         }
         $output .= '</ul>';
         $output .= '</div>';
