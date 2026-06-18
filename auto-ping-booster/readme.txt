@@ -1,65 +1,58 @@
-=== Auto Ping Booster Free ===
-Contributors: samee2cool
-Tags: google index, seo, auto, woocommerce, booster
-Requires at least: 5.6
+=== Auto Ping Booster Pro ===
+Contributors: samiullahferoz
+Tags: seo, xml sitemap, auto seo, woo commerece, ping booster
+Requires at least: 5.8
 Tested up to: 6.5
-Stable tag: 5.2.1
+Stable tag: 5.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-All-in-One SEO Suite featuring IndexNow instant pings, automated image ALT tag optimization, a minimalist JSON-LD schema backstop, and a Google Analytics style intelligence hub.
+🚀 High-performance, real-time Search Engine Synchronization Framework & Premium SEO Metadata Optimization Sandbox.
 
 == Description ==
 
-Auto Ping Booster Pro is a lightweight, high-performance SEO workspace built to automate metadata indexing, structural JSON-LD schemas, image accessibility compliance, and web performance tracking natively within your WordPress environment.
+**Auto Ping Booster Pro** is an all-in-one, premium search synchronization engine designed to bridge the gap between publishing content and instant discovery across major search networks. Powered by a real-time logical metadata framework, it bypasses traditional indexing delays while offering an elegant administrative command center.
 
-Unlike heavy, bloated alternatives, this plugin replaces fragmented optimization software by integrating premium Google Analytics style data layouts, programmatic alt-text backstops, fallback structured data injectors, and real-time page snippet previews directly into a single, cohesive engine.
+### 🌟 Key Framework Features:
 
-= Core Features =
-* **Minimalist JSON-LD Schema Backstop:** Dynamically injects clean, standard-compliant Article and WooCommerce Product schemas directly into the page header on runtime, eliminating critical Google Search Console structural warnings out of the box.
-* **Automated Smart Alt-Tag Engine:** Automatically falls back missing or empty image HTML attributes (`alt=""`) to the corresponding Post or WooCommerce Product title on runtime, instantly fixing crawler visibility flaws without bloat.
-* **Google Analytics Style Hub:** A beautiful, responsive administrative command center visualizing Impressions, Clicks, Average CTR, Average Position, and Organic Session trends.
-* **Top Performance Monitors:** Instantly isolates your top 5 most popular public content routes and top 5 highest-converting Google organic keyword search queries.
-* **Content Score Distribution Matrix:** At-a-glance auditing bars evaluating content groupings, post categories, and gold/silver collections for target optimization.
-* **Instant IndexNow Pings:** Seamlessly notifies Bing, Yandex, and other search engines immediately upon post mutations or publications.
-* **SEO Snippet Studio Box:** Features a real-time, interactive Google Search desktop preview simulation directly inside your Post, Page, and WooCommerce Edit screens.
-* **Clean Permalink URL Optimizer:** Intelligently strips structural stop-words (*is, to, a, me, from, the, and*) from post slugs automatically upon save.
-* **Dynamic Sitemaps & Robots Manager:** Automatically generates indexable XML paths and human-scannable HTML matrix layout lists via a standard shortcode `[apb_html_sitemap]`.
+* **Instant IndexNow Pipeline Dispatch:** Automatically submits your raw production post/page payloads straight to Bing, Yandex, and other compatible engines immediately upon saving or publishing.
+* **Real-Time SEO Snippet Studio:** Adds a clean sandbox preview context directly into your Posts, Pages, and WooCommerce Products edit screen. Intercepts custom meta titles, description abstracts, and dedicates an image override frame. Includes live Google Search Simulation calculations to visualize desktop/mobile click-through rates.
+* **Advanced E-Commerce Context Locks:** Deep integration hooks for WooCommerce. Automatically pulls pricing matrices and star ratings into the simulation playground without formatting data corruption.
+* **Dynamic XML Sitemap Matrix:** Programmatically maps out a structural, lightweight `sitemap.xml` structure tailored for rapid web performance crawlers.
+* **Virtual Robots.txt Rules Processor:** Inject, append, and handle custom directive indexing loops natively from your dashboard workspace without editing real files.
+* **Permalink Stop-Word Optimizer:** Clean permalink address slug strings instantly upon generation by stripping unneeded short clutter words automatically.
+* **Webmaster Header Verification Arrays:** Seamless field parameters to register Google, Bing, Pinterest, and Baidu tracking verification keys directly into automated header injection blocks.
+* **Telemetry Activity Logs:** Monitors performance data payloads inside database tables with explicit success/error trace reporting indicators.
 
 == Installation ==
 
-1. Upload the entire `auto-ping-booster` directory to your server's `/wp-content/plugins/` directory.
-2. Activate the plugin through the 'Plugins' menu screen inside your WordPress Admin Dashboard.
-3. Navigate to **APB Pro** from the sidebar menu layout matrix to access your live Analytics Intelligence Hub.
-4. The Automated Alt-Tag and Schema engines will begin processing background structures immediately across your posts, pages, and WooCommerce grids.
+1. Upload the `auto-ping-booster` folder to your `/wp-content/plugins/` directory, or upload the ZIP file directly via the WordPress Admin dashboard.
+2. Activate the plugin through the 'Plugins' menu in WordPress.
+3. Navigate to **APB Pro** in your dashboard sidebar navigation menu to configure your parameters.
+4. Input your **IndexNow Production Security Key** and choose your targeted content post type matrix.
 
 == Frequently Asked Questions ==
 
-= Does the Schema engine or Alt-Tag automation write to my database? =
-No. Both tools operate dynamically at runtime as pages load. This shields your site speed, entirely avoids database size inflation, and guarantees zero server timeout vulnerabilities even on massive catalog infrastructures.
+= Where do I get an IndexNow API Key? =
+You can easily auto-generate or paste an alphanumeric key code string inside the core configuration settings tab under the general control panel.
 
-= Where does the dashboard traffic telemetry data originate? =
-The performance grids leverage our decoupled, lightweight analytical engine. It structures essential tracking vectors identically to Google Analytics 4 and Google Search Console datasets, including deep extensible hooks to route pipeline API payloads seamlessly.
+= Does this framework support WooCommerce items? =
+Yes! It features deep integration hooks for WooCommerce products, natively pulling active pricing and rating summaries straight into the search console layout grid.
 
-= How do I render the human-readable visual sitemap index? =
-Simply paste the shortcode `[apb_html_sitemap]` on any empty published WordPress Page to display a beautifully clean, highly scannable grid layout of your public content catalog.
+= How do I output a visual map of my pages on the frontend? =
+Simply paste the shortcode snippet `[apb_html_sitemap]` on any public post or page layout to render a structured, categorical hierarchical navigation stream for your users.
+
+== Screenshots ==
+
+1. **Performance Dashboard Tab:** High-end web layout monitoring clicks, impressions, keyword parameters, and top content assets.
+2. **Real-Time Snippet Studio Box:** Live interactive search result layout configuration matching exact Google typography spacing rules.
+3. **Core Setup & Verification Panel:** Safe key injection targets for verification tracking arrays and IndexNow security layers.
+4. **Sitemaps & Robots Manager:** Workspaces mapping rules out to dynamic sitemaps and raw robots files.
 
 == Changelog ==
 
-= 5.2.1 =
-* Integrated a background Minimalist JSON-LD Schema Backstop providing automatic Article and WooCommerce Product graph injection natively.
-* Launched automated runtime Image Alt Tag optimization for standard posts and WooCommerce product galleries.
-* Implemented regex parsing backstops to catch missing or empty asset declarations safely without database writes.
-
-= 2.40 =
-* Integrated premium Google Analytics style tracking hub interface.
-* Added live statistical monitors for impressions, clicks, average CTR, average position, and organic sessions.
-* Added Top 5 Popular Content and Top 5 Search Queries database performance matrix trackers.
-* Integrated color-graded Yoast-style content score and readability auditing indicator bars.
-
-= 2.30 =
-* Introduced real-time interactive SEO Snippet Studio Box for Posts, Pages, and Products.
-* Added dynamic metadata mapping overrides for OpenGraph (Facebook/Instagram) and X (Twitter) cards.
-
 = 1.0.0 =
-* Core release containing IndexNow integration pipelines and dynamic XML/HTML sitemap routing engines.
+* Initial Premium Release Architecture.
+* Implemented real-time dynamic typography preview engine for search engine simulations.
+* Rolled out automated stop-word strip regex patterns for permalinks optimization loops.
+* Bound activity database trace monitors inside telemetry dashboard UI tabs.

@@ -22,7 +22,11 @@ function apb_admin_menu() {
     );
 }
 
+/**
+ * Register Setting Key Targets to Database
+ */
 function apb_register_settings() {
+    // Force register every engine property to the unified group
     register_setting('apb_settings_group', 'apb_indexnow_key');
     register_setting('apb_settings_group', 'apb_enable_auto_submit');
     register_setting('apb_settings_group', 'apb_enable_logging');
@@ -35,6 +39,7 @@ function apb_register_settings() {
     register_setting('apb_settings_group', 'apb_robots_txt_content');
     register_setting('apb_settings_group', 'apb_enable_url_optimizer');
 }
+
 
 // Enqueue Core Media Uploaders safely inside post layout views
 function apb_enqueue_admin_meta_assets($hook) {

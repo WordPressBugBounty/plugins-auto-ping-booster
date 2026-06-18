@@ -1,9 +1,10 @@
 <?php
 /*
  * Plugin Name:        Auto Ping Booster Free
- * Plugin URI:         -----------
+ * Plugin URI:         https://wordpress.com/plugins/auto-ping-booster
  * Description:        All-in-One SEO Indexing Suite featuring IndexNow, Dynamic XML/HTML Sitemaps, URL Permalink Optimization, and Meta Snippet Preview Engines.
- * Version:            2.30
+ * Version:            5.2.1
+ * Stable tag:         5.2.1
  * Author:             Samee Ullah Feroz
  * Author URI:         https://www.fiverr.com/samee2cool
  * License:            GPLv2 or later
@@ -18,13 +19,14 @@ if ( ! defined( 'WPINC' ) ) {
 
 if (!defined('ABSPATH')) exit;
 
-define('APB_VERSION', '2.30');
+define('APB_VERSION', '5.2.1');
 define('APB_PATH', plugin_dir_path(__FILE__));
 
 // File Inclusions
 require_once APB_PATH . 'includes/logger.php';
 require_once APB_PATH . 'includes/indexer.php';
 require_once APB_PATH . 'includes/admin.php';
+require_once APB_PATH . 'includes/seo-engine.php';
 
 // Initial System Activation Setup
 register_activation_hook(__FILE__, 'apb_activate_plugin');
@@ -34,6 +36,63 @@ function apb_activate_plugin() {
     }
     if (get_option('apb_allowed_post_types') === false) {
         update_option('apb_allowed_post_types', array('post', 'page', 'product'));
+    }
+    if (get_option('apb_enable_xml_sitemap') === false) {
+        update_option('apb_enable_xml_sitemap', '1');
+    }
+    
+    // Setup and instantly flush rewrites so sitemap.xml works without saving things twice
+    apb_register_sitemap_rewrite_rule();
+    flush_rewrite_rules();
+}
+
+// Register Native WordPress Rules for the XML Sitemap
+add_action('init', 'apb_register_sitemap_rewrite_rule');
+function apb_register_sitemap_rewrite_rule() {
+    add_rewrite_rule('^sitemap\.xml$', 'index.php?apb_xml_sitemap=1', 'top');
+}
+
+// Whitelist Query Variable
+add_filter('query_vars', 'apb_register_sitemap_query_var');
+function apb_register_sitemap_query_var($vars) {
+    $vars[] = 'apb_xml_sitemap';
+    return $vars;
+}
+
+// Dynamic Runtime Parsing for sitemap.xml Execution Routing
+add_action('template_redirect', 'apb_render_dynamic_xml_sitemap');
+function apb_render_dynamic_xml_sitemap() {
+    if (get_query_var('apb_xml_sitemap') == '1') {
+        if (get_option('apb_enable_xml_sitemap') !== '1') {
+            return;
+        }
+
+        header('Content-Type: text/xml; charset=utf-8');
+        echo '<?xml version="1.0" encoding="UTF-8"?>';
+        echo '<?xml-stylesheet type="text/xsl" href="' . esc_url(includes_url('css/dist/block-library/style.css')) . '"?>';
+        echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+
+        $allowed_types = get_option('apb_allowed_post_types', array('post', 'page', 'product'));
+        $query_args = array(
+            'post_type'      => $allowed_types,
+            'post_status'    => 'publish',
+            'posts_per_page' => 100,
+            'orderby'        => 'modified',
+            'order'          => 'DESC'
+        );
+        $posts = get_posts($query_args);
+
+        foreach ($posts as $p) {
+            echo '<url>';
+            echo '<loc>' . esc_url(get_permalink($p->ID)) . '</loc>';
+            echo '<lastmod>' . esc_html(mysql2date('Y-m-d\TH:i:s+00:00', $p->post_modified_gmt, false)) . '</lastmod>';
+            echo '<changefreq>weekly</changefreq>';
+            echo '<priority>0.8</priority>';
+            echo '</url>';
+        }
+
+        echo '</urlset>';
+        exit;
     }
 }
 
@@ -113,7 +172,7 @@ function apb_inject_webmaster_meta_tags() {
 
         $permalink = get_permalink($post->ID);
 
-        echo "\n<!-- Auto Ping Booster SEO Suite Meta Engine -->\n";
+        echo "\n\n";
         echo "<title>" . esc_html($meta_title) . "</title>\n";
         echo "<meta name=\"description\" content=\"" . esc_attr($meta_desc) . "\" />\n";
         
@@ -144,7 +203,7 @@ function apb_inject_webmaster_meta_tags() {
                 echo "<meta property=\"product:price:currency\" content=\"" . esc_attr(get_woocommerce_currency()) . "\" />\n";
             }
         }
-        echo "<!-- / Auto Ping Booster SEO Suite Meta Engine -->\n\n";
+        echo "\n\n";
     }
 }
 
@@ -185,42 +244,6 @@ function apb_optimize_post_url_slug($slug, $post_ID, $post_status, $post_type, $
     }
 
     return implode('-', $clean_parts);
-}
-
-// --- DYNAMIC XML SITEMAP ROUTING ENGINE ---
-add_action('init', 'apb_register_xml_sitemap_url');
-function apb_register_xml_sitemap_url() {
-    if (get_option('apb_enable_xml_sitemap') !== '1') return;
-
-    $request_uri = untrailingslashit(ltrim($_SERVER['REQUEST_URI'], '/'));
-    if ($request_uri === 'sitemap.xml') {
-        header('Content-Type: text/xml; charset=utf-8');
-        echo '<?xml version="1.0" encoding="UTF-8"?>';
-        echo '<?xml-stylesheet type="text/xsl" href="' . esc_url(includes_url('css/dist/block-library/style.css')) . '"?>';
-        echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
-
-        $allowed_types = get_option('apb_allowed_post_types', array('post', 'page', 'product'));
-        $query_args = array(
-            'post_type'      => $allowed_types,
-            'post_status'    => 'publish',
-            'posts_per_page' => 100,
-            'orderby'        => 'modified',
-            'order'          => 'DESC'
-        );
-        $posts = get_posts($query_args);
-
-        foreach ($posts as $p) {
-            echo '<url>';
-            echo '<loc>' . esc_url(get_permalink($p->ID)) . '</loc>';
-            echo '<lastmod>' . esc_html(mysql2date('Y-m-d\TH:i:s+00:00', $p->post_modified_gmt, false)) . '</lastmod>';
-            echo '<changefreq>weekly</changefreq>';
-            echo '<priority>0.8</priority>';
-            echo '</url>';
-        }
-
-        echo '</urlset>';
-        exit;
-    }
 }
 
 // --- DYNAMIC ROBOTS.TXT MODIFIER ---
@@ -270,11 +293,3 @@ function apb_render_html_sitemap_shortcode() {
     $output .= '</div>';
     return $output;
 }
-
-// Include core plugin dependency modules
-require_once plugin_dir_path(__FILE__) . 'includes/logger.php';
-require_once plugin_dir_path(__FILE__) . 'includes/indexer.php';
-require_once plugin_dir_path(__FILE__) . 'includes/admin.php';
-
-// ADD THIS NEW LINE RIGHT HERE:
-require_once plugin_dir_path(__FILE__) . 'includes/seo-engine.php';
